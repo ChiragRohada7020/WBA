@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Birthday</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center text-gray-100 p-4">
+
+<!-- 🔥 FORM CARD -->
+<div class="w-full max-w-lg p-8 rounded-2xl bg-white/10 backdrop-blur-lg shadow-xl">
+
+    <!-- TITLE -->
+    <h2 class="text-2xl font-bold text-center mb-6">
+        🎂 Add Birthday
+    </h2>
+
+    <!-- FORM -->
+    <form method="POST" class="space-y-5">
+
+        <!-- NAME -->
+        <div>
+            <label class="text-sm text-gray-300">Name</label>
+            <input 
+                name="name"
+                placeholder="Enter name"
+                required
+                class="w-full mt-1 p-3 rounded-xl bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400"
+            >
+        </div>
+
+        <!-- PHONE -->
+        <div>
+            <label class="text-sm text-gray-300">Phone Number</label>
+            <input 
+                name="number"
+                placeholder="Enter phone number"
+                required
+                class="w-full mt-1 p-3 rounded-xl bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400"
+            >
+        </div>
+
+        <!-- RELATION -->
+        <div>
+            <label class="text-sm text-gray-300">Relation</label>
+            <input 
+                name="relation"
+                placeholder="friend / mother / client"
+                class="w-full mt-1 p-3 rounded-xl bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400"
+            >
+        </div>
+
+        <!-- DATE -->
+        <div>
+            <label class="text-sm text-gray-300">Date</label>
+            <input 
+                type="text"
+                name="date"
+                required
+                class="w-full mt-1 p-3 rounded-xl bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-300"
+            >
+        </div>
+
+        <!-- JID -->
+        <div>
+            <label class="text-sm text-gray-300">JID (Optional)</label>
+            <input 
+                name="jid"
+                placeholder="WhatsApp JID"
+                class="w-full mt-1 p-3 rounded-xl bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400"
+            >
+        </div>
+
+        <!-- GREETING -->
+        <div>
+            <label class="text-sm text-gray-300">Greeting</label>
+            <input 
+                name="greeting"
+                placeholder="Custom message"
+                class="w-full mt-1 p-3 rounded-xl bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400"
+            >
+        </div>
+
+        <!-- BUTTON -->
+        <button 
+            class="w-full bg-green-500 hover:bg-green-600 py-3 rounded-xl font-semibold transition duration-300 shadow-md"
+        >
+            Save
+        </button>
+
+    </form>
+
+    <!-- BACK -->
+    <a href="/" class="block text-center mt-4 text-gray-300 hover:text-white transition">
+        ← Back
+    </a>
+
+</div>
+
+</body>
+</html>

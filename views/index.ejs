@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Birthday Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen text-gray-100 flex flex-col">
+
+<!-- 🔥 NAVBAR -->
+<div class="flex flex-col sm:flex-row justify-between items-center gap-3 px-6 py-4 backdrop-blur-md bg-white/10 shadow-md">
+
+    <h1 class="text-xl font-bold">🎂 Birthday Dashboard</h1>
+
+    <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+
+        <a href="/add"
+           class="w-full sm:w-auto text-center bg-green-500 hover:bg-green-600 px-4 py-2 rounded-xl text-sm shadow transition">
+            ➕ Add
+        </a>
+
+        <a href="/change-password"
+           class="w-full sm:w-auto text-center border border-blue-300 text-blue-200 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-xl text-sm transition">
+            🔐 Change Password
+        </a>
+
+        <a href="/logout"
+           onclick="return confirm('Are you sure you want to logout?')"
+           class="w-full sm:w-auto text-center border border-red-400 text-red-300 hover:bg-red-500 hover:text-white px-4 py-2 rounded-xl text-sm transition">
+            🚪 Logout
+        </a>
+
+    </div>
+
+</div>
+
+<!-- 🔥 QR SECTION -->
+<div class="w-full px-4 mt-6">
+    <div class="max-w-3xl mx-auto p-5 sm:p-6 rounded-2xl bg-white/10 backdrop-blur-lg shadow-lg text-center">
+
+        <h3 class="text-lg font-semibold">📲 Connect WhatsApp</h3>
+
+        <div id="qr" class="mt-4 text-gray-300">
+            ⌛ Loading QR...
+        </div>
+
+        <button onclick="loadQR()"
+            class="mt-4 border border-yellow-300 text-yellow-200 hover:bg-yellow-500 hover:text-white px-5 py-2 rounded-xl transition w-full sm:w-auto">
+            🔄 Retry QR
+        </button>
+
+    </div>
+</div>
+<div class="w-full px-4 mt-6">
+
+    <!-- SEARCH -->
+    <div class="max-w-6xl mx-auto mb-4">
+        <input 
+            type="text" 
+            id="searchInput"
+            placeholder="🔍 Search by name or phone..."
+            class="w-full p-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            onkeyup="searchTable()"
+        >
+    </div>
+
+    <!-- TABLE -->
+    <div class="max-w-6xl mx-auto p-4 bg-white/10 backdrop-blur-lg rounded-2xl shadow overflow-x-auto">
+
+        <table class="w-full min-w-[600px] text-sm text-center">
+
+            <thead>
+            <tr class="border-b border-white/20">
+                <th class="p-3">Name</th>
+                <th class="p-3">Phone</th>
+                <th class="p-3">Date</th>
+                <th class="p-3">JID</th>
+                <th class="p-3">Action</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <% data.forEach(item => { %>
+            <tr class="border-b border-white/10 hover:bg-white/10 transition data-row">
+
+                <td class="p-3 font-semibold"><%= item.name || "-" %></td>
+
+                <td class="p-3"><%= item.number || "-" %></td>
+
+                <td class="p-3"><%= item.date || "-" %></td>
+
+                <td class="p-3 text-xs break-all"><%= item.jid || "-" %></td>
+
+                <td class="p-3">
+                    <div class="flex flex-col sm:flex-row gap-2 justify-center items-center">
+
+                        <a href="/edit/<%= item._id %>"
+                           class="w-full sm:w-auto text-center px-3 py-1 text-xs rounded-lg border border-blue-300 text-blue-200 hover:bg-blue-500 hover:text-white transition">
+                            ✏️ Edit
+                        </a>
+
+                        <a href="/delete/<%= item._id %>"
+                           onclick="return confirm('Delete this record?')"
+                           class="w-full sm:w-auto text-center px-3 py-1 text-xs rounded-lg border border-red-300 text-red-200 hover:bg-red-500 hover:text-white transition">
+                            🗑️ Delete
+                        </a>
+
+                    </div>
+                </td>
+
+            </tr>
+            <% }) %>
+
+            </tbody>
+
+        </table>
+
+        <p id="noResult" class="text-center text-gray-400 mt-4 hidden">
+            No results found
+        </p>
+
+    </div>
+</div>
+
+<!-- 🔥 FOOTER -->
+<footer class="mt-10 py-4 text-center bg-white/10 backdrop-blur-md border-t border-white/20">
+
+    <p class="text-sm text-gray-400">
+        © <span id="year"></span> All Rights Reserved
+    </p>
+
+    <p class="text-sm text-gray-300 mt-1">
+        Created by <span class="font-semibold text-white">Chirag Rohada</span>
+    </p>
+
+</footer>
+
+<!-- 🔥 SCRIPTS -->
+<script>
+
+// QR
+async function loadQR() {
+    try {
+        const res = await fetch("/qr")
+        const data = await res.json()
+
+        const qrDiv = document.getElementById("qr")
+
+        if (data.status === "connected") {
+            qrDiv.innerHTML = "<span class='text-green-400 font-semibold'>✅ Connected</span>"
+        }
+        else if (data.qr) {
+            qrDiv.innerHTML = `
+                <img src="${data.qr}" class="mx-auto mt-4 rounded-xl shadow" width="220"/>
+                <p class="mt-2 text-gray-300">📲 Scan QR</p>
+            `
+        }
+        else {
+            qrDiv.innerHTML = "⌛ Generating QR..."
+        }
+
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+setInterval(loadQR, 3000)
+loadQR()
+
+// SEARCH
+function searchTable() {
+    const input = document.getElementById("searchInput").value.toLowerCase()
+    const rows = document.querySelectorAll(".data-row")
+    const noResult = document.getElementById("noResult")
+
+    let visible = 0
+
+    rows.forEach(row => {
+        const text = row.innerText.toLowerCase()
+
+        if (text.includes(input)) {
+            row.style.display = ""
+            visible++
+        } else {
+            row.style.display = "none"
+        }
+    })
+
+    noResult.style.display = visible === 0 ? "block" : "none"
+}
+
+// FOOTER YEAR
+document.getElementById("year").textContent = new Date().getFullYear()
+
+</script>
+
+</body>
+</html>
