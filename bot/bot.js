@@ -3,6 +3,7 @@ const {
     useMultiFileAuthState,
     fetchLatestBaileysVersion
 } = require("@whiskeysockets/baileys")
+
 require("dotenv").config()
 const dns = require("dns")
 dns.setServers(["1.1.1.1","8.8.8.8"])
@@ -14,7 +15,7 @@ const path = require("path")
 
 const Birthday = require("../shared/Birthday")
 
-// 🔐 AI API
+// 🔐 AI APInpm install dotenv
 const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY // 🔥 replace
 })
@@ -94,10 +95,9 @@ async function start() {
     sock.ev.on("creds.update", saveCreds)
     // ================= CONNECTION =================
    global.botStatus = "connecting"
-
 sock.ev.on("connection.update", async (update) => {
 
-    const { connection, qr } = update
+    const { connection, lastDisconnect, qr } = update
 
     if (qr) {
         const QRCode = require("qrcode")
@@ -113,8 +113,18 @@ sock.ev.on("connection.update", async (update) => {
     }
 
     if (connection === "close") {
-        global.botStatus = "disconnected"
         console.log("❌ CLOSED")
+
+        const reason = lastDisconnect?.error?.output?.statusCode
+
+        console.log("🔍 Disconnect reason:", reason)
+
+        // 🔥 AUTO RESTART (IMPORTANT)
+        console.log("🔄 Restarting bot...")
+
+        setTimeout(() => {
+            start()   // 👈 your startBot function
+        }, 2000)
     }
 })
 

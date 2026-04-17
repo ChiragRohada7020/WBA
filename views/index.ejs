@@ -52,7 +52,7 @@
             ⌛ Loading QR...
         </div>
 
-        <button onclick="loadQR()"
+        <button onclick="retryQr()"
             class="mt-4 border border-yellow-300 text-yellow-200 hover:bg-yellow-500 hover:text-white px-5 py-2 rounded-xl transition w-full sm:w-auto">
             🔄 Retry QR
         </button>
@@ -148,6 +148,13 @@
 <script>
 
 // QR
+
+function retryQr() {
+    document.getElementById("qr").innerHTML = "🔄 Refreshing..."
+
+    // 👉 redirect instead of fetch
+    window.location.href = "/refresh"
+}
 async function loadQR() {
     try {
         const res = await fetch("/qr")
