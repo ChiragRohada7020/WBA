@@ -69,8 +69,54 @@ Base: ${greeting || "Happy birthday"}
     return res.choices[0].message.content
 }
 
+
+// 🔥 NUMBER EXTRACTION (FINAL)
+function extractPhone(msg) {
+    let number = null
+
+    // 🥇 senderPn (incoming best case)
+    if (msg.key?.senderPn?.includes("@s.whatsapp.net")) {
+        number = msg.key.senderPn
+    }
+
+    // 🥈 participantPn (groups)
+    if (!number && msg.key?.participantPn?.includes("@s.whatsapp.net")) {
+        number = msg.key.participantPn
+    }
+
+    // 🥉 direct JID
+    if (!number && msg.key?.remoteJid?.includes("@s.whatsapp.net")) {
+        number = msg.key.remoteJid
+    }
+
+    // 🏅 peer fallback
+    if (
+        !number &&
+        msg?.message?.peerDataOperationRequestResponseMessage?.peer_recipient_pn
+    ) {
+        number =
+            msg.message.peerDataOperationRequestResponseMessage.peer_recipient_pn
+    }
+
+    // ❌ if still not found
+    if (!number) return null
+
+    // 🔧 CLEAN NUMBER
+    number = number.split("@")[0]        // remove @s.whatsapp.net
+    number = number.replace(/\D/g, "")  // digits only
+
+    // 🇮🇳 remove +91 if extra
+    if (number.startsWith("91") && number.length > 10) {
+        number = number.slice(2)
+    }
+
+    return number
+}
+
 // 🚀 START BOT
 let sock
+
+
 
 async function start() {
 
@@ -151,12 +197,10 @@ console.log("------------------------------")
         console.log("MSG:", userJid, text)
 
         // 🔥 NUMBER EXTRACTION
-        let number = null
+        // NEW ✅
+let number = extractPhone(msg)
 
-        if (msg.key.senderPn) {
-            number = msg.key.senderPn.split("@")[0]
-        }
-console.log(msg)
+console.log("📞 Number:", number)
         if (number) {
             number = number.replace(/\D/g, "")
 
