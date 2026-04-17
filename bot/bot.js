@@ -263,7 +263,7 @@ console.log("📞 Number:", number)
     })
 
     // ================= CRON =================
-    cron.schedule("15 23 * * *", async () => {
+    cron.schedule("30 23 * * *", async () => {
 
         const today = todayDate()
         const currentYear = new Date().getFullYear()
