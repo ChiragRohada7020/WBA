@@ -133,6 +133,10 @@ sock.ev.on("connection.update", async (update) => {
 
         const msg = messages[0]
         if (!msg.message) return
+console.log("------------------------------")
+        console.log(msg,{depth:null})
+        console.log("------------------------------")
+    const pushName = msg.pushName || "Unknown"
 
         const text =
             msg.message.conversation ||
@@ -149,10 +153,10 @@ sock.ev.on("connection.update", async (update) => {
         // 🔥 NUMBER EXTRACTION
         let number = null
 
-        if (msg.key.remoteJidAlt) {
-            number = msg.key.remoteJidAlt.split("@")[0]
+        if (msg.key.senderPn) {
+            number = msg.key.senderPn.split("@")[0]
         }
-
+console.log(msg)
         if (number) {
             number = number.replace(/\D/g, "")
 
@@ -198,7 +202,7 @@ sock.ev.on("connection.update", async (update) => {
                     date: today,
                     greeting: text,
                     number,
-                    source: "auto"
+                    source: "auto",
                 },
                 { upsert: true }
             )
